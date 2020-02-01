@@ -1,74 +1,64 @@
-// Business Logic for Addressbook
+// Business Logic for AddressBook ---------
 function AddressBook() {
-  this.contacts = [];
-  this.currentId = 0;
+  this.contacts = [],
+  this.currentId = 0
 }
 
-// This prototype will push new contacts into addressbook
 AddressBook.prototype.addContact = function(contact) {
   contact.id = this.assignId();
   this.contacts.push(contact);
 }
 
 AddressBook.prototype.assignId = function() {
-  return this.currentId += 1;
+  this.currentId += 1;
+  return this.currentId;
 }
 
 AddressBook.prototype.findContact = function(id) {
-  for (var i = 0; i < this.contacts.length; i++ ) {
+  for (var i=0; i< this.contacts.length; i++) {
     if (this.contacts[i]) {
       if (this.contacts[i].id == id) {
         return this.contacts[i];
       }
     }
-  }; 
+  };
   return false;
 }
 
 AddressBook.prototype.deleteContact = function(id) {
-  for (var i = 0; i < this.contacts.length; i++) {
+  for (var i=0; i< this.contacts.length; i++) {
     if (this.contacts[i]) {
       if (this.contacts[i].id == id) {
         delete this.contacts[i];
         return true;
       }
-    } else{
-      console.log("contact does not exist")
     }
   };
   return false;
 }
 
-// Business Logic for Contact
+// Business Logic for Contacts ---------
 function Contact(firstName, lastName, phoneNumber) {
-  this.firstName = firstName;
-  this.lastName = lastName;
-  this.phoneNumber = phoneNumber;
+  this.firstName = firstName,
+  this.lastName = lastName,
+  this.phoneNumber = phoneNumber
 }
 
 Contact.prototype.fullName = function() {
   return this.firstName + " " + this.lastName;
 }
 
-var EpicodusContacts = new AddressBook();
-var josh = new Contact("Josh", "Hellman", "503-420-6969");
-var michelle = new Contact("Michelle", "Morin", "971-222-5322");
-EpicodusContacts.addContact(josh);
-EpicodusContacts.addContact(michelle);
-
-console.log(EpicodusContacts.contacts);
-
-// User Interface Logic------------------
+// User Interface Logic ---------
 var addressBook = new AddressBook();
 
-function displayContactDetails(addressBookToDisplay){
-    var contactsList = $("ul#contacts");
-    var htmlForContactInfo = "";
-    addressBookToDisplay.contacts.forEach(function(contact) {
-      htmlForContactInfo += "<li id=" + contact.id + ">" + contact.firstName + " " + contact.lastName + "</li>";
-    });
-    contactsList.html(htmlForContactInfo);
-}
+function displayContactDetails(addressBookToDisplay) {
+  var contactsList = $("ul#contacts");
+  var htmlForContactInfo = "";
+  addressBookToDisplay.contacts.forEach(function(contact) {
+    htmlForContactInfo += "<li id=" + contact.id + ">" + contact.firstName + " " + contact.lastName + "</li>";
+  });
+  contactsList.html(htmlForContactInfo);
+};
 
 function showContact(contactId) {
   var contact = addressBook.findContact(contactId);
@@ -78,12 +68,11 @@ function showContact(contactId) {
   $(".phone-number").html(contact.phoneNumber);
   var buttons = $("#buttons");
   buttons.empty();
-  buttons.append("<button class='deleteButton' id=" +  + contact.id + ">Delete</button>");
+  buttons.append("<button class='deleteButton' id=" + contact.id + ">Delete</button>");
 }
 
-
-function attachContactListeners(){
-  $("ul#contacts").on("click", "li", function(){
+function attachContactListeners() {
+  $("ul#contacts").on("click", "li", function() {
     showContact(this.id);
   });
   $("#buttons").on("click", ".deleteButton", function() {
@@ -97,9 +86,12 @@ $(document).ready(function() {
   attachContactListeners();
   $("form#new-contact").submit(function(event) {
     event.preventDefault();
-    var inputtedFirstName = $("input#new-first-name").val()
+    var inputtedFirstName = $("input#new-first-name").val();
     var inputtedLastName = $("input#new-last-name").val();
     var inputtedPhoneNumber = $("input#new-phone-number").val();
+    $("input#new-first-name").val("");
+    $("input#new-last-name").val("");
+    $("input#new-phone-number").val("");
     var newContact = new Contact(inputtedFirstName, inputtedLastName, inputtedPhoneNumber);
     addressBook.addContact(newContact);
     displayContactDetails(addressBook);
